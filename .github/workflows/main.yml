@@ -1,0 +1,56 @@
+name: Decrypt and Run Python Script
+
+on:
+  push:
+    branches:
+      - main
+  pull_request:
+    branches:
+      - main
+
+jobs:
+  decrypt-and-run:
+    runs-on: ubuntu-latest
+
+    steps:
+    - name: Checkout code
+      uses: actions/checkout@v3
+
+    - name: Set up Python
+      uses: actions/setup-python@v4
+      with:
+        python-version: '3.x'
+
+    - name: Install dependencies
+      run: |
+        pip install cryptography
+
+    - name: Decrypt and run the Python script
+      env:
+        ENCRYPTION_KEY_JSON: ${{ secrets.ENCRYPTION_KEY_JSON }}
+      run: |
+        echo "${{ secrets.ENCRYPTION_KEY_JSON }}" > encryption_key.json
+
+        # Load the encryption key from the JSON file
+        python - <<EOF
+        from cryptography.fernet import Fernet
+        import json
+
+        # Load the encryption key from the JSON file
+        with open("encryption_key.json", "r") as key_file:
+            key_data = json.load(key_file)
+            key = key_data["encryption_key"].encode()
+
+        # Initialize Fernet with the key
+        fernet = Fernet(key)
+
+        # Read the encrypted script content
+        with open("encrypted_hello_world.py.enc", "rb") as encrypted_file:
+            encrypted_script = encrypted_file.read()
+
+        # Decrypt the script content
+        decrypted_script = fernet.decrypt(encrypted_script)
+
+        # Execute the decrypted script
+        exec(decrypted_script.decode())
+        EOF
