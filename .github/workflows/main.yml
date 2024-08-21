@@ -31,7 +31,10 @@ jobs:
       run: |
         echo "${{ secrets.ENCRYPTION_KEY_JSON }}" > encryption_key.json
 
-        # Load the encryption key from the JSON file
+        # Print the contents of the file for debugging purposes
+        cat encryption_key.json
+
+        # Decrypt and run the Python script
         python - <<EOF
         from cryptography.fernet import Fernet
         import json
