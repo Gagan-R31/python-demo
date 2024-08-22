@@ -1,59 +1,30 @@
-name: Decrypt and Run Python Script
+name: Verify GCP Credentials
 
 on:
-  push:
-    branches:
-      - main
-  pull_request:
-    branches:
-      - main
+  workflow_dispatch:  # Allows you to trigger this workflow manually
 
 jobs:
-  decrypt-and-run:
+  verify-gcp-creds:
     runs-on: ubuntu-latest
-
     steps:
-    - name: Checkout code
-      uses: actions/checkout@v3
+      - name: Checkout code
+        uses: actions/checkout@v3
 
-    - name: Set up Python
-      uses: actions/setup-python@v4
-      with:
-        python-version: '3.x'
+      - name: Set up GCP Credentials
+        run: |
+          echo "${{ secrets.GCP_CREDENTIALS }}" > $HOME/gcp-key.json
+          gcloud auth activate-service-account --key-file=$HOME/gcp-key.json
+          gcloud config set project your-gcp-project-id
 
-    - name: Install dependencies
-      run: |
-        pip install cryptography
+      - name: Install gcloud CLI
+        run: |
+          echo "Installing gcloud CLI..."
+          sudo apt-get update
+          sudo apt-get install -y google-cloud-cli
 
-    - name: Decrypt and run the Python script
-      env:
-        ENCRYPTION_KEY_JSON: ${{ secrets.ENCRYPTION_KEY_JSON }}
-      run: |
-        echo "${{ secrets.ENCRYPTION_KEY_JSON }}" > encryption_key.json
-
-        # Print the contents of the file for debugging purposes
-        cat encryption_key.json
-
-        # Decrypt and run the Python script
-        python - <<EOF
-        from cryptography.fernet import Fernet
-        import json
-
-        # Load the encryption key from the JSON file
-        with open("encryption_key.json", "r") as key_file:
-            key_data = json.load(key_file)
-            key = key_data["encryption_key"].encode()
-
-        # Initialize Fernet with the key
-        fernet = Fernet(key)
-
-        # Read the encrypted script content
-        with open("encrypted_hello_world.py.enc", "rb") as encrypted_file:
-            encrypted_script = encrypted_file.read()
-
-        # Decrypt the script content
-        decrypted_script = fernet.decrypt(encrypted_script)
-
-        # Execute the decrypted script
-        exec(decrypted_script.decode())
-        EOF
+      - name: Verify GCP Authentication
+        run: |
+          echo "Verifying GCP authentication..."
+          gcloud auth list  # This will list the active account
+          echo "Listing GCP projects..."
+          gcloud projects list  # This will list GCP projects associated with the service account
