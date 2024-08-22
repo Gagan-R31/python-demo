@@ -12,7 +12,7 @@ jobs:
 
       - name: Set up GCP Credentials
         run: |
-          echo "${{ secrets.GCP_CREDENTIALS }}" > $HOME/gcp-key.json
+          echo "${{ secrets.GCP_CREDENTIALS }}" base64 --decode > $HOME/gcp-key.json
           gcloud auth activate-service-account --key-file=$HOME/gcp-key.json
           gcloud config set project your-gcp-project-id
 
