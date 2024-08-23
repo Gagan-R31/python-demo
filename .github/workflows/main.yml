@@ -12,8 +12,8 @@ jobs:
 
       - name: Set up GCP Credentials
         run: |
-          echo "${{ secrets.GCP_CREDENTIALS }}" base64 --decode > $/home/runner/gcp-key.json
-          gcloud auth activate-service-account --key-file=$/home/runner/gcp-key.json
+          echo "${{ secrets.GCP_CREDENTIALS }}" base64 --decode > base64 --decode > /tmp/gcp-key.json
+          gcloud auth activate-service-account --key-file=/tmp/gcp-key.json
           gcloud config set project nebula-dev5
 
       - name: Install gcloud CLI
