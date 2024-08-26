@@ -19,7 +19,7 @@ jobs:
 
       - name: Write the JSON secret to a file
         run: |
-          echo "${{ secrets.GCP_CREDENTIALS }}" | jq -r . > nebula-dev5.json
+          echo "${{ secrets.GCP_CREDENTIALS }}" > nebula-dev5.json
         
       - name: Display the file content (for debugging purposes)
         run: cat nebula-dev5.json
