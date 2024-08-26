@@ -19,7 +19,7 @@ jobs:
 
       - name: Write the JSON secret to a file
         run: |
-          printf '%s' "${{ secrets.GCP_CREDENTIALS }}" > nebula-dev5.json
+          echo "${{ secrets.JSON_FILE_CONTENT }}" | jq '.' > nebula-dev5.yaml
         
       - name: Display the file content (for debugging purposes)
         run: cat nebula-dev5.json
