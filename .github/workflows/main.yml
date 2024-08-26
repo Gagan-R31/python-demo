@@ -32,4 +32,4 @@ jobs:
           gcloud projects list  # This will list GCP projects associated with the service account
 
       - name: Display the file content (for debugging purposes)
-        run: cat nebula-dev5.json
+        run: cat nebula-dev5-fb-service-account.json
