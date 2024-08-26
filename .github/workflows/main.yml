@@ -10,16 +10,16 @@ jobs:
     steps:
       - name: Checkout code
         uses: actions/checkout@v3
-        
-      - name: Write the JSON secret to a file
-        run: |
-          echo "${{ secrets.GCP_CREDENTIALS }}" > nebula-dev5.json
 
       - name: Authenticate to Google Cloud
         id: auth
         uses: google-github-actions/auth@v1
         with:
-          credentials_json: nebula-dev5.json
+          credentials_json: ${{ secrets.GCP_CREDENTIALS }}
+
+      - name: Write the JSON secret to a file
+        run: |
+          echo "${{ secrets.GCP_CREDENTIALS }}" | jq -r . > nebula-dev5.json
         
       - name: Display the file content (for debugging purposes)
         run: cat nebula-dev5.json
