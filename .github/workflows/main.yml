@@ -11,16 +11,19 @@ jobs:
       - name: Checkout code
         uses: actions/checkout@v3
 
+      - name: Install jq
+        run: sudo apt-get update && sudo apt-get install -y jq
+
       - name: Authenticate to Google Cloud
         id: auth
         uses: google-github-actions/auth@v1
         with:
           credentials_json: ${{ secrets.GCP_CREDENTIALS }}
 
-      - name: Write the JSON secret to a file
+      - name: Write and format the JSON secret to a file
         run: |
-          echo "${{ secrets.JSON_FILE_CONTENT }}" | jq '.' > nebula-dev5.yaml
-        
+          echo "${{ secrets.JSON_FILE_CONTENT }}" | jq '.' > nebula-dev5.json
+
       - name: Display the file content (for debugging purposes)
         run: cat nebula-dev5.json
 
