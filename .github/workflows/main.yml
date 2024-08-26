@@ -11,23 +11,18 @@ jobs:
       - name: Checkout code
         uses: actions/checkout@v3
 
-      - name: Authenticate to Google Cloud
-        id: auth
-        uses: google-github-actions/auth@v1
-        with:
-          credentials_json: ${{ secrets.GCP_CREDENTIALS }}
-
       - name: Write the JSON secret to a file
         run: |
-          echo "${{ secrets.GCP_CREDENTIALS }}" | jq -r . > nebula-dev5.json
-        
+          echo "${{ secrets.GCP_CREDENTIALS_JSON }}" > gcp-credentials.json
+
       - name: Display the file content (for debugging purposes)
-        run: cat nebula-dev5.json
+        run: cat gcp-credentials.json
 
       - name: Set up Google Cloud SDK
         uses: google-github-actions/setup-gcloud@v1
         with:
           project_id: 'nebula-dev5'  # Replace with your GCP project ID
+          service_account_key_file: gcp-credentials.json  # Use the file you just created
 
       - name: Verify GCP Authentication
         run: |
