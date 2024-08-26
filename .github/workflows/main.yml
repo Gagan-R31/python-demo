@@ -11,12 +11,9 @@ jobs:
       - name: Checkout code
         uses: actions/checkout@v3
 
-      - name: Install jq
-        run: sudo apt-get update && sudo apt-get install -y jq
-
       - name: Decode and write the JSON file
         run: |
-          echo "${{ secrets.GCP_CREDENTIALS }}" | base64 --decode > nebula-dev5.json
+          echo "${{ secrets.DEV_APP_ENGINE_CREDENTIALS }}" | base64 --decode > nebula-dev5-fb-service-account.json
 
       - name: Set up Google Cloud SDK
         uses: google-github-actions/setup-gcloud@v1
@@ -25,7 +22,7 @@ jobs:
 
       - name: Authenticate to Google Cloud using the JSON file
         run: |
-          gcloud auth activate-service-account --key-file=nebula-dev5.json
+          gcloud auth activate-service-account --key-file=nebula-dev5-fb-service-account.json
 
       - name: Verify GCP Authentication
         run: |
