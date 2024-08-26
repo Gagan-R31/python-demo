@@ -22,7 +22,7 @@ jobs:
 
       - name: Write and format the JSON secret to a file
         run: |
-          echo "${{ secrets.GCP_CREDENTIALS }}" | jq '.' > nebula-dev5.json
+          printf "%s" "${{ secrets.JSON_FILE_CONTENT }}" | jq '.' > nebula-dev5.json || { echo "Failed to format JSON"; exit 1; }
 
       - name: Display the file content (for debugging purposes)
         run: cat nebula-dev5.json
