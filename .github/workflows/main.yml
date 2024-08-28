@@ -15,6 +15,10 @@ jobs:
         with:
           ref: ${{ github.head_ref }}  # Checkout the branch that made the pull request
 
+      - name: Display the branch the pipeline is running on
+        run: |
+          echo "Pipeline is running on branch: ${{ github.head_ref }}"
+
       - name: Decode and write the JSON file
         run: |
           echo "${{ secrets.DEV_APP_ENGINE_CREDENTIALS }}" | base64 --decode > nebula-dev5-fb-service-account.json
