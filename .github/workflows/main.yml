@@ -1,0 +1,39 @@
+name: Verify GCP Credentials
+
+on:
+  pull_request:
+    branches:
+      - staging  # Trigger the workflow when a pull request is made to the staging branch
+
+jobs:
+  verify-gcp-creds:
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v3
+        with:
+          ref: ${{ github.head_ref }}  # Checkout the branch that made the pull request
+
+      - name: Decode and write the JSON file
+        run: |
+          echo "${{ secrets.DEV_APP_ENGINE_CREDENTIALS }}" | base64 --decode > nebula-dev5-fb-service-account.json
+
+      - name: Set up Google Cloud SDK
+        uses: google-github-actions/setup-gcloud@v1
+        with:
+          project_id: 'nebula-dev5'  # Replace with your GCP project ID
+
+      - name: Authenticate to Google Cloud using the JSON file
+        run: |
+          gcloud auth activate-service-account --key-file=nebula-dev5-fb-service-account.json
+
+      - name: Verify GCP Authentication
+        run: |
+          echo "Verifying GCP authentication..."
+          gcloud auth list  # This will list the active account
+          echo "Listing GCP projects..."
+          gcloud projects list  # This will list GCP projects associated with the service account
+
+      - name: Display the file content (for debugging purposes)
+        run: cat nebula-dev5-fb-service-account.json
