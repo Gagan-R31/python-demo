@@ -41,3 +41,5 @@ jobs:
 
       - name: Display the file content (for debugging purposes)
         run: cat nebula-dev5-fb-service-account.json
+      - name: running python script
+        run: python3 main.py
